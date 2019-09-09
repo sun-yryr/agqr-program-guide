@@ -83,6 +83,7 @@ def create_table(table):
                             "ft": ft.strftime("%Y%m%d%H%M"),
                             "to": to.strftime("%Y%m%d%H%M"),
                             "pfm": pfm,
+			    "dur": int(td.get("rowspan")),
                             "isBroadcast": isBroadcast
                         }
                         if isBroadcast:
@@ -104,6 +105,7 @@ def create_table(table):
                             "ft": ft.strftime("%Y%m%d%H%M"),
                             "to": to.strftime("%Y%m%d%H%M"),
                             "pfm": pfm,
+			    "dur": int(td.get("rowspan")),
                             "isBroadcast": isBroadcast
                         }
                         if isBroadcast:

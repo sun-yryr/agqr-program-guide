@@ -49,7 +49,7 @@ app = falcon.API()
 app.add_route('/api/all', AgqrAll())
 app.add_route('/api/today', AgqrToday())
 app.add_route('/api/now', AgqrNow())
-app.add_route('/reload', reload())
+app.add_route('/api/reload', reload())
 
 def loadfile():
     global all_json
@@ -64,5 +64,5 @@ def loadfile():
 if __name__ == "__main__":
     loadfile()
     from wsgiref import simple_server
-    httpd = simple_server.make_server("127.0.0.1", 8000, app)
+    httpd = simple_server.make_server("127.0.0.1", 1234, app)
     httpd.serve_forever()
