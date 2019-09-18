@@ -49,7 +49,7 @@ def create_table(table):
         for i in range(len(td_all)):
             td = td_all[i]
             # time が24時を超えた場合のアレ
-            time_str = td.find(class_="time").text.replace("\n", "", 3).replace(" 頃", "").split(":")
+            time_str = td.find(class_="time").text.replace("\n", "").replace(" 頃", "").split(":")
             if int(time_str[0]) >= 24:
                 time_str[0] = format(int(time_str[0]) - 24,  "02")
             time_str = time_str[0] + time_str[1]
@@ -58,8 +58,8 @@ def create_table(table):
 
             i2 = i
             while(i2<7):
-                title = td.find(class_="title-p").text.replace("\n", "", 3)
-                pfm = td.find(class_="rp").text.replace("\n", "", 4)
+                title = td.find(class_="title-p").text.replace("\n", "")
+                pfm = td.find(class_="rp").text.replace("\n", "")
                 c = td.get("class")[0]
                 isBroadcast = True
                 if c == "bg-repeat":
@@ -115,7 +115,7 @@ def create_table(table):
                 i2 += 1
                 if i2 == 7:
                     # 追加できなかった番組
-                    print(td.find(class_="title-p").text.replace("\n", "", 3), ft.strftime("%Y%m%d%H%M"), time_str)
+                    print(td.find(class_="title-p").text.replace("\n", ""), ft.strftime("%Y%m%d%H%M"), time_str)
     for i in range(7):
         main_data[i].extend(main_data2[i])
     return main_data
