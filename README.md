@@ -1,5 +1,7 @@
 # agqr-program-guide
 
+https://agqr.sun-yryr.com で動いてるやつです
+
 ## 使い方
 
 1. pip install requests とかする
