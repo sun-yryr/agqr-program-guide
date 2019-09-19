@@ -58,7 +58,7 @@ def create_table(table):
 
             i2 = i
             while(i2<7):
-                title = td.find(class_="title-p").text.replace("\n", "")
+                title = td.find(class_="title-p").text.replace("\n", "").replace("\u3000", " ")
                 pfm = td.find(class_="rp").text.replace("\n", "")
                 c = td.get("class")[0]
                 isBroadcast = True
