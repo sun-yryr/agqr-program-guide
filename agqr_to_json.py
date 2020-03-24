@@ -78,6 +78,10 @@ def create_table(table):
                         end_times[new_i] += datetime.timedelta(minutes=int(td.get("rowspan")))
                         ft = datetime.datetime.strptime(monday + time_str, "%Y%m%d%H%M") + datetime.timedelta(days=new_i)
                         to = ft + datetime.timedelta(minutes=int(td.get("rowspan")))
+                        # 当日より昔の日付の場合は +7日 する
+                        if ft.date() < today:
+                            ft = ft + datetime.timedelta(days=7)
+                            to = to + datetime.timedelta(days=7)
                         new_data = {
                             "title": title,
                             "ft": ft.strftime("%Y%m%d%H%M"),
