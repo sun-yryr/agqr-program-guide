@@ -13,7 +13,7 @@ def main():
     if table_body is None:
         return
     new_table = create_table(table_body)
-    f = open("create_table.json", "w")
+    f = open("agqr_table.json", "w")
     json.dump(new_table, f, ensure_ascii=False)
     f.close()
 
@@ -25,7 +25,7 @@ def main():
         for prog in new_table[i]:
             if prog.get("isRepeat") == False:
                 not_repeat[i].append(prog)
-    f = open("create_table2.json", "w")
+    f = open("agqr_table_not_repeat.json", "w")
     json.dump(not_repeat, f, ensure_ascii=False)
     f.close
     
@@ -65,7 +65,7 @@ def create_table(table):
                 if c == "bg-repeat":
                     # これは再放送
                     isRepeat = True
-                elif c == "bg-f":
+                elif c == "bg-f" or c == "bg-l":
                     isRepeat = False
                 else:
                     isBroadcast = False
@@ -83,7 +83,7 @@ def create_table(table):
                             "ft": ft.strftime("%Y%m%d%H%M"),
                             "to": to.strftime("%Y%m%d%H%M"),
                             "pfm": pfm,
-			    "dur": int(td.get("rowspan")),
+			                "dur": int(td.get("rowspan")),
                             "isBroadcast": isBroadcast
                         }
                         if isBroadcast:
@@ -105,7 +105,7 @@ def create_table(table):
                             "ft": ft.strftime("%Y%m%d%H%M"),
                             "to": to.strftime("%Y%m%d%H%M"),
                             "pfm": pfm,
-			    "dur": int(td.get("rowspan")),
+			                "dur": int(td.get("rowspan")),
                             "isBroadcast": isBroadcast
                         }
                         if isBroadcast:

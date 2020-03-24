@@ -58,10 +58,10 @@ app.add_route('/api/reload', reload())
 def loadfile():
     global all_json
     global not_repeat_json
-    f = open("create_table.json", "r")
+    f = open("agqr_table.json", "r")
     all_json = json.loads(f.read(), encoding="utf-8")
     f.close()
-    f = open("create_table2.json", "r")
+    f = open("agqr_table_not_repeat.json", "r")
     not_repeat_json = json.loads(f.read(), encoding="utf-8")
     f.close()
 
