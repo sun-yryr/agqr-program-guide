@@ -45,7 +45,11 @@ class reload:
         loadfile()
         resp.body = "ok"
 
-app = falcon.API()
+class CORSMiddleware:
+    def process_request(self, req, resp):
+        resp.set_header('Access-Control-Allow-Origin', '*')
+
+app = falcon.API(middleware=[CORSMiddleware()])
 app.add_route('/api/all', AgqrAll())
 app.add_route('/api/today', AgqrToday())
 app.add_route('/api/now', AgqrNow())
