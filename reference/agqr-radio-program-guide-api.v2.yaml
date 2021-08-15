@@ -1,0 +1,268 @@
+openapi: 3.0.0
+info:
+  title: agqr-radio-program-guide-api
+  version: '1.0'
+  contact:
+    name: sun-yryr(t_minagawa)
+    url: 'https://twitter.com/taittide'
+    email: taittide@gmail.com
+servers:
+  - url: 'http://localhost:8080/api'
+    description: local
+  - url: 'https://agqr.sun-yryr.com/api'
+    description: prod
+paths:
+  /v2/programs/weekly:
+    get:
+      summary: '[未実装] 週間番組表を取得'
+      tags: []
+      responses:
+        '200':
+          description: OK（検索結果がない場合は空配列になります）
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/program'
+      operationId: get-v2-programs-weekly
+      description: 条件に合った番組情報を返却する。
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: q
+          description: '検索ワード（title,personality,infoの全てを対象）'
+        - schema:
+            type: string
+            example: 'audio,movie,repeat'
+            default: 'audio,movie'
+          in: query
+          name: include_program_type
+          description: |-
+            検索結果に含める番組タイプ
+            [,]区切りで記述
+            movie: 動画付きのみ
+            audio: 音声のみ
+            repeat: 再放送を含める
+    parameters: []
+  /v2/programs/daily:
+    get:
+      summary: '[未実装] 日間番組表を取得'
+      tags: []
+      responses:
+        '200':
+          description: OK（検索結果がない場合は空配列になります）
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/program'
+      operationId: get-v2-programs-daily
+      description: 条件に合った番組情報を返却する
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: q
+          description: '検索ワード（title,personality,infoの全てを対象）'
+        - schema:
+            type: string
+            example: 'audio,movie,repeat'
+            default: 'audio,movie'
+          in: query
+          name: include_program_type
+          description: |-
+            検索結果に含める番組タイプ
+            [,]区切りで記述
+            movie: 動画付きのみ
+            audio: 音声のみ
+            repeat: 再放送を含める
+    parameters: []
+  /all:
+    get:
+      summary: 週刊番組表を取得
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/old-program'
+      operationId: get-all
+      description: |-
+        1週間分全ての番組情報を返却します
+        そのうち削除予定
+  /today:
+    get:
+      summary: 日間番組表を取得
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/old-program'
+      operationId: get-today
+      description: |-
+        本日放送予定の番組情報を返却します
+        そのうち削除予定
+  /now:
+    get:
+      summary: 現在の番組情報を返却
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/old-program'
+      operationId: get-now
+      description: |-
+        現在放送中の番組情報を返却します
+        そのうち削除予定
+  /v2/programs/now:
+    get:
+      summary: '[未実装] 現在の番組情報を返却'
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/program'
+        '404':
+          description: 現在放送中の番組がありません
+      operationId: get-v2-programs-now
+      description: 現在放送中の番組情報を返却します
+  '/v2/programs/{programId}':
+    parameters:
+      - schema:
+          type: string
+        name: programId
+        in: path
+        required: true
+    get:
+      summary: '[未実装] 番組詳細を取得する'
+      tags: []
+      responses: {}
+      operationId: get-v2-programs-programId
+      description: ''
+components:
+  schemas:
+    program:
+      title: program
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 番組ごとに一位なID。再放送の場合も別のIDになる。
+        title:
+          type: string
+          description: 番組タイトル
+        info:
+          type: string
+          description: 番組の説明
+        url:
+          type: string
+          description: 番組の詳細ページURL
+        start_datetime:
+          type: string
+          format: date-time
+          example: '2020-04-18T14:00:00Z'
+          description: 番組開始時間
+        end_datetime:
+          type: string
+          format: date-time
+          example: '2020-04-18T14:30:00Z'
+          description: 番組終了時間
+        dur:
+          type: integer
+          description: 番組時間(分)
+        is_repeat:
+          type: boolean
+          description: 再放送かどうか
+        is_movie:
+          type: boolean
+          description: 動画付きかどうか
+        is_live:
+          type: boolean
+          description: 生放送かどうか
+        personalities:
+          type: array
+          description: 出演者
+          items:
+            $ref: '#/components/schemas/personality'
+      required:
+        - id
+        - title
+        - info
+        - url
+        - start_datetime
+        - end_datetime
+        - dur
+        - is_repeat
+        - is_movie
+        - is_live
+        - personalities
+    old-program:
+      title: old-program
+      type: object
+      properties:
+        title:
+          type: string
+        ft:
+          type: string
+          format: date-time
+          description: YmdHM の12桁
+        to:
+          type: string
+          format: date-time
+          description: YmdHM の12桁
+        pfm:
+          type: string
+          description: 出演者。「、」区切り？
+        dur:
+          type: integer
+          description: 番組時間(分)
+        isBroadcast:
+          type: boolean
+          description: 配信しているか。基本的に常にtrueとなる。
+        isRepeat:
+          type: boolean
+          description: 再放送かどうか
+      required:
+        - title
+        - ft
+        - to
+        - pfm
+        - dur
+        - isBroadcast
+    personality:
+      title: personality
+      type: object
+      properties:
+        id:
+          type: string
+          description: 出演者
+        name:
+          type: string
+          description: 名前
+        url:
+          type: string
+          description: 出演者の詳細ページURL
+      required:
+        - id
+        - name
+        - url

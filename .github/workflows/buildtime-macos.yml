@@ -1,0 +1,14 @@
+name: linter
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  setup:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: swift package resolve
+      - name: swift build
+        run: swift build --enable-test-discovery -c release

@@ -1,40 +1,38 @@
 # ================================
-# Build image
+# Develop image
 # ================================
-FROM swift:5.3-focal as build
+FROM swift:5.3-focal as develop
 
 # Install OS updates and, if needed, sqlite3
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update \
-    && apt-get -q dist-upgrade -y \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get -q dist-upgrade -y
 
-# Set up a build area
-WORKDIR /build
+# Dependency resolve for Kanna
+RUN apt-get install libxml2-dev -y
 
-# First just resolve dependencies.
-# This creates a cached layer that can be reused
-# as long as your Package.swift/Package.resolved
-# files do not change.
+WORKDIR /develop
+
 COPY ./Package.* ./
 RUN swift package resolve
 
-# Copy entire repo into container
 COPY . .
 
-# Build everything, with optimizations and test discovery
 RUN swift build --enable-test-discovery -c release
 
-# Switch to the staging area
-WORKDIR /staging
+# ================================
+# Build image
+# ================================
+FROM develop as build
 
-# Copy main executable to staging area
-RUN cp "$(swift build --package-path /build -c release --show-bin-path)/Run" ./
+WORKDIR /build
+
+RUN cp "$(swift build --package-path /develop -c release --show-bin-path)/Run" ./
 
 # Copy any resouces from the public directory and views directory if the directories exist
 # Ensure that by default, neither the directory nor any of its contents are writable.
-RUN [ -d /build/Public ] && { mv /build/Public ./Public && chmod -R a-w ./Public; } || true
-RUN [ -d /build/Resources ] && { mv /build/Resources ./Resources && chmod -R a-w ./Resources; } || true
+RUN [ -d /develop/Public ] && { mv /develop/Public ./Public && chmod -R a-w ./Public; } || true
+RUN [ -d /develop/Resources ] && { mv /develop/Resources ./Resources && chmod -R a-w ./Resources; } || true
 
 # ================================
 # Run image
@@ -52,7 +50,7 @@ RUN useradd --user-group --create-home --system --skel /dev/null --home-dir /app
 WORKDIR /app
 
 # Copy built executable and any staged resources from builder
-COPY --from=build --chown=vapor:vapor /staging /app
+COPY --from=build --chown=vapor:vapor /build /app
 
 # Ensure all further commands run as the vapor user
 USER vapor:vapor
