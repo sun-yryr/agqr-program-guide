@@ -6,9 +6,9 @@ func routes(_ app: Application) throws {
         return req.view.render("index", ["title": "Hello Vapor!"])
     }
 
-    app.get("hello") { req -> String in
+    app.get("hello") { _ -> String in
         return "Hello, world!"
     }
 
-    try app.register(collection: TodoController())
+    try app.register(collection: OldProgramController())
 }
