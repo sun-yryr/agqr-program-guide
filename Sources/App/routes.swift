@@ -10,5 +10,7 @@ func routes(_ app: Application) throws {
         return "Hello, world!"
     }
 
-    try app.register(collection: OldProgramController())
+    try app.group("api") { builder in
+        try builder.register(collection: OldProgramController())
+    }
 }
