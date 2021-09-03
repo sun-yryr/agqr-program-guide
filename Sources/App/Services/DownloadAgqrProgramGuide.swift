@@ -15,8 +15,8 @@ struct DownloadAgqrProgramGuide {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyyMMdd"
-        // 今日から1週間分のurlを生成する
-        let urls = (0...7).map { index -> String in
+        // 今日から6日分のurlを生成する
+        let urls = (0...6).map { index -> String in
             let calculateDate = Calendar.current.date(byAdding: .day, value: index, to: Date())!
             return formatter.string(from: calculateDate)
         }.map { "\(Self.AGQR_URL)?date=\($0)" }

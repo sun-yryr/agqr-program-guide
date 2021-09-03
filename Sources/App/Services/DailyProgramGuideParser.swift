@@ -86,7 +86,7 @@ struct DailyProgramGuideParser: ProgramGuideParsing {
             tmp.setValue(date[1], for: .day)
 
             // htmlから作成した日付が過去だった場合、年が切り替わっているので+1年する
-            if Calendar.current.date(from: today)! < Calendar.current.date(from: tmp)! {
+            if Calendar.current.date(from: today)! > Calendar.current.date(from: tmp)! {
                 tmp.setValue(tmp.year! + 1, for: .year)
             }
 
