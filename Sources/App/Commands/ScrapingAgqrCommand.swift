@@ -7,8 +7,8 @@ struct ScrapingAgqr: Command {
     let client = DownloadAgqrProgramGuide()
 
     struct Signature: CommandSignature {
-        @Argument(name: "path")
-        var path: String
+        @Option(name: "url")
+        var url: String?
     }
 
     var help: String = "Download program guide and parse to json."
@@ -18,7 +18,7 @@ struct ScrapingAgqr: Command {
         defer {
             context.console.info("End Process")
         }
-        let future = client.execute(app: context.application)
+        let future = client.execute(app: context.application, url: signature.url)
             .unwrap(or: fatalError("htmlデータの取得に失敗しました"))
             .flatMap { res -> EventLoopFuture<Void> in
                 let programGuide = self.parser.parse(res)

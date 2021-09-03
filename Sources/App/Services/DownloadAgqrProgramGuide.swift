@@ -28,8 +28,8 @@ struct DownloadAgqrProgramGuide {
         }.flatten(on: app.eventLoopGroup.next())
     }
 
-    func execute(app: Application) -> EventLoopFuture<Data?> {
-        return app.client.get(URI(string: Self.AGQR_URL)).map { res in
+    func execute(app: Application, url: String?) -> EventLoopFuture<Data?> {
+        return app.client.get(URI(string: url ?? Self.AGQR_URL)).map { res in
             return res.body.flatMap { $0.getData(at: 0, length: $0.writerIndex) }
         }
     }
