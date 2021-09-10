@@ -35,10 +35,20 @@ public func configure(_ app: Application) throws {
         ImportProgramGuideJob(parser: DailyProgramGuideParser(), repository: ProgramGuideRepository())
     )
     .daily()
-    .at(7, 0) // 07:00 am
-    
+    .at(7, 0)  // 07:00 am
+
     // try app.queues.startInProcessJobs(on: .default)
     try app.queues.startScheduledJobs()
+
+    // register middleware
+    let corsConfiguration = CORSMiddleware.Configuration(
+        allowedOrigin: .all,
+        allowedMethods: [.GET, .OPTIONS, .HEAD],
+        allowedHeaders: [
+            .accept, .contentType, .origin, .xRequestedWith, .userAgent, .accessControlAllowOrigin
+        ]
+    )
+    app.middleware.use(CORSMiddleware(configuration: corsConfiguration))
 
     // register routes
     try routes(app)
