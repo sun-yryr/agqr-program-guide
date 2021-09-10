@@ -15,6 +15,12 @@ struct OldProgramController: RouteCollection {
         return df
     }()
 
+    static let headers: HTTPHeaders = {
+        var headers = HTTPHeaders()
+        headers.add(name: .contentType, value: "application/json")
+        return headers
+    }()
+
     static let oldProgramEncoder: JSONEncoder = {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .formatted(Self.dateFormatter)
@@ -42,6 +48,7 @@ struct OldProgramController: RouteCollection {
                 let oldPrograms = programs.map { OldProgram(from: $0) }
                 return Response(
                     status: .ok,
+                    headers: Self.headers,
                     body: .init(data: try! Self.oldProgramEncoder.encode(oldPrograms))
                 )
             }
@@ -67,6 +74,7 @@ struct OldProgramController: RouteCollection {
                 let oldPrograms = programs.map { OldProgram(from: $0) }
                 return Response(
                     status: .ok,
+                    headers: Self.headers,
                     body: .init(data: try! Self.oldProgramEncoder.encode(oldPrograms))
                 )
             }
@@ -85,6 +93,7 @@ struct OldProgramController: RouteCollection {
                 let oldProgram = OldProgram(from: program)
                 return Response(
                     status: .ok,
+                    headers: Self.headers,
                     body: .init(data: try! Self.oldProgramEncoder.encode(oldProgram))
                 )
             }
