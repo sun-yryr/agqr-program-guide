@@ -18,6 +18,7 @@ struct OldProgramController: RouteCollection {
     static let oldProgramEncoder: JSONEncoder = {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .formatted(Self.dateFormatter)
+        encoder.outputFormatting = .withoutEscapingSlashes
         return encoder
     }()
 
