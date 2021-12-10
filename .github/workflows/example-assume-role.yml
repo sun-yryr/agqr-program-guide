@@ -1,6 +1,6 @@
 name: example-assume-role
 on:
-  workflow_dispatch
+  push
 
 jobs:
   login:
