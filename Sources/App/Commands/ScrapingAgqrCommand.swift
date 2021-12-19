@@ -7,8 +7,8 @@ struct ScrapingAgqr: Command {
     let client = DownloadAgqrProgramGuide()
 
     struct Signature: CommandSignature {
-        @Option(name: "url")
-        var url: String?
+        @Argument(name: "url")
+        var url: String
     }
 
     var help: String = "Download program guide and parse to json."
@@ -18,18 +18,22 @@ struct ScrapingAgqr: Command {
         defer {
             context.console.info("End Process")
         }
-        let future = client.execute(app: context.application, url: signature.url)
-            .unwrap(or: fatalError("htmlデータの取得に失敗しました"))
-            .flatMap { res -> EventLoopFuture<Void> in
-                let programGuide = self.parser.parse(res)
-                return repository.save(programGuide, app: context.application)
-            }
-
-        do {
-            try future.wait()
-        } catch {
-            print("Batch failure")
-            print(error.localizedDescription)
+        
+        let promise = context.application.eventLoopGroup.next().makePromise(of: Void.self)
+        promise.completeWithTask {
+            await self.asyncRun(using: context, signature: signature)
         }
+        
+        try promise.futureResult.wait()
+    }
+    
+    func asyncRun(using context: CommandContext, signature: Signature) async {
+        let response = await client.execute(app: context.application, url: signature.url)
+        guard let response = response else {
+            print("htmlデータの取得に失敗しました")
+            return
+        }
+        let programGuide = parser.parse(response)
+        await repository.save(programGuide, app: context.application)
     }
 }
