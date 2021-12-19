@@ -13,17 +13,24 @@ struct ImportProgramGuideJob: ScheduledJob {
         defer {
             context.logger.info("End Scraping Process")
         }
-
-        return client.fetchWeekly(app: context.application).flatMap { responses -> EventLoopFuture<Void> in
-            responses
-                .map { response -> EventLoopFuture<Void> in
-                    guard let response = response else {
-                        return context.application.eventLoopGroup.future(error: "番組表データがありませんでした。")
-                    }
-                    let programGuide = self.parser.parse(response)
-                    return self.repository.save(programGuide, app: context.application)
-                }
-                .flatten(on: context.application.eventLoopGroup.next())
+        let promise = context.eventLoop.makePromise(of: Void.self)
+        promise.completeWithTask {
+            await self.asyncRun(context: context)
+        }
+        return promise.futureResult
+        
+    }
+    
+    func asyncRun(context: QueueContext) async -> Void {
+        let responses = await client.fetchWeekly(app: context.application)
+        for response in responses {
+            guard let response = response else {
+                // TODO: ログに変更
+                print("番組表データがありません。")
+                continue
+            }
+            let programGuide = self.parser.parse(response)
+            await self.repository.save(programGuide, app: context.application)
         }
     }
 }
