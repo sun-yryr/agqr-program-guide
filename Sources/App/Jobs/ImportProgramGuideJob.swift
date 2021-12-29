@@ -18,10 +18,9 @@ struct ImportProgramGuideJob: ScheduledJob {
             await self.asyncRun(context: context)
         }
         return promise.futureResult
-        
     }
-    
-    func asyncRun(context: QueueContext) async -> Void {
+
+    func asyncRun(context: QueueContext) async {
         let responses = await client.fetchWeekly(app: context.application)
         for response in responses {
             guard let response = response else {

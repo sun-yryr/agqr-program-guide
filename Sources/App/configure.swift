@@ -46,7 +46,7 @@ public func configure(_ app: Application) throws {
         allowedOrigin: .all,
         allowedMethods: [.GET, .OPTIONS, .HEAD],
         allowedHeaders: [
-            .accept, .contentType, .origin, .xRequestedWith, .userAgent, .accessControlAllowOrigin
+            .accept, .contentType, .origin, .xRequestedWith, .userAgent, .accessControlAllowOrigin,
         ]
     )
     app.middleware.use(CORSMiddleware(configuration: corsConfiguration))

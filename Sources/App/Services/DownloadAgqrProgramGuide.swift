@@ -26,7 +26,7 @@ struct DownloadAgqrProgramGuide {
                     return await self.execute(app: app, url: url)
                 }
             }
-            
+
             for await response in group {
                 responses.append(response)
             }

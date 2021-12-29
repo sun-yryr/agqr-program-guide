@@ -18,15 +18,15 @@ struct ScrapingAgqr: Command {
         defer {
             context.console.info("End Process")
         }
-        
+
         let promise = context.application.eventLoopGroup.next().makePromise(of: Void.self)
         promise.completeWithTask {
             await self.asyncRun(using: context, signature: signature)
         }
-        
+
         try promise.futureResult.wait()
     }
-    
+
     func asyncRun(using context: CommandContext, signature: Signature) async {
         let response = await client.execute(app: context.application, url: signature.url)
         guard let response = response else {
