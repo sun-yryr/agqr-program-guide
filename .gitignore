@@ -199,3 +199,6 @@ Packages
 xcuserdata
 *.xcodeproj
 .swiftpm
+
+# dagger
+cue.mod/pkg/*
