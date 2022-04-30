@@ -22,7 +22,6 @@ volumes:
 x-shared_environment: &shared_environment
   LOG_LEVEL: ${LOG_LEVEL:-debug}
   DATABASE_HOST: db
-  DATABASE_NAME: vapor_database
   DATABASE_USERNAME: vapor_username
   DATABASE_PASSWORD: vapor_password
 
@@ -61,10 +60,10 @@ services:
     image: mysql:8.0
     volumes:
       - db_data:/var/lib/mysql
+      - ./docker/mysql:/docker-entrypoint-initdb.d
     environment:
       MYSQL_USER: vapor_username
       MYSQL_PASSWORD: vapor_password
-      MYSQL_DATABASE: vapor_database
       MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
     ports:
       - '3306:3306'
