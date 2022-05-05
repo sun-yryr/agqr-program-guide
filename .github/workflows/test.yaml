@@ -1,8 +1,9 @@
-name: linter
+name: test
 
 on:
   pull_request:
-    branches: [master]
+    branches:
+      - master
 
 jobs:
   setup:
@@ -10,5 +11,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: swift package resolve
-      - name: swift build
-        run: swift build --enable-test-discovery -c release
+      - name: swift test
+        run: swift test
