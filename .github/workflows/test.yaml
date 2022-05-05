@@ -23,7 +23,7 @@ jobs:
         run: swift build
       - name: setup service
         run: |
-          docker-compose -d db redis
+          docker-compose up -d db redis
           sleep 10s
       - name: Run tests
         run: swift test
