@@ -15,7 +15,7 @@ final class Program: Model, Content {
     var info: String
 
     @Field(key: "url")
-    var url: URL
+    var url: String
 
     @Field(key: "start_datetime")
     var startDatetime: Date
@@ -48,7 +48,7 @@ final class Program: Model, Content {
     init() {}
 
     init(
-        id: Int? = nil, title: String, info: String, url: URL, startDatetime: Date, endDatetime: Date,
+        id: Int? = nil, title: String, info: String, url: String, startDatetime: Date, endDatetime: Date,
         dur: Int, isRepeat: Bool, isMovie: Bool, isLive: Bool
     ) {
         self.id = id

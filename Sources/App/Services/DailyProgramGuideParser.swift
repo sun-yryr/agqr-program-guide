@@ -55,7 +55,7 @@ struct DailyProgramGuideParser: ProgramGuideParsing {
         let program = Program(
             title: titleElement.text!,
             info: description.trimmingCharacters(in: .whitespacesAndNewlines),
-            url: URL(string: titleElement["href"]!)!,
+            url: titleElement["href"]!,
             startDatetime: startDate,
             endDatetime: endDate,
             dur: Calendar.current.dateComponents([.minute], from: startDate, to: endDate).minute!,
