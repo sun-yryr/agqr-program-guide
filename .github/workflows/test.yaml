@@ -21,5 +21,9 @@ jobs:
       - run: swift package resolve
       - name: Build
         run: swift build
+      - name: setup service
+        run: |
+          docker-compose -d db redis
+          sleep 10s
       - name: Run tests
         run: swift test
