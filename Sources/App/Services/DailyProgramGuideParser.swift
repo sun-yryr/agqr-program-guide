@@ -38,7 +38,9 @@ struct DailyProgramGuideParser: ProgramGuideParsing {
         // dailyProgram-itemContainer からその他の情報を取得する
         let titleElement = element.xpath("//p[@class='dailyProgram-itemTitle']/a").first!
         let personalities: [Personality] = {
-            let itemPersonality = element.xpath("//p[@class='dailyProgram-itemPersonality']").first!
+            guard let itemPersonality = element.xpath("//p[@class='dailyProgram-itemPersonality']").first else {
+                return []
+            }
             let personalities = itemPersonality.xpath("/a").map {
                 Personality(name: $0.text!, info: $0["href"]!)
             }
