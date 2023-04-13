@@ -20,8 +20,15 @@ struct ImportProgramGuideJob: ScheduledJob {
                     guard let response = response else {
                         return context.application.eventLoopGroup.future(error: "番組表データがありませんでした。")
                     }
-                    let programGuide = self.parser.parse(response)
-                    return self.repository.save(programGuide, app: context.application)
+                    do {
+                        let programGuide = try self.parser.parse(response)
+                        return self.repository.save(programGuide, app: context.application)
+                    } catch let error as AgqrParseError {
+                        context.logger.error(.init(stringLiteral: error.message))
+                        return context.application.eventLoopGroup.future(error: error)
+                    } catch {
+                        return context.application.eventLoopGroup.future(error: error)
+                    }
                 }
                 .flatten(on: context.application.eventLoopGroup.next())
         }

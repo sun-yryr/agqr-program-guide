@@ -21,8 +21,13 @@ struct ScrapingAgqr: Command {
         let future = client.execute(app: context.application, url: signature.url)
             .unwrap(or: fatalError("htmlデータの取得に失敗しました"))
             .flatMap { res -> EventLoopFuture<Void> in
-                let programGuide = self.parser.parse(res)
-                return repository.save(programGuide, app: context.application)
+                do {
+                    let programGuide = try self.parser.parse(res)
+                    context.console.info(programGuide.map { element in element.program.startDatetime.toString() }.joined(separator: ","))
+                    return context.application.eventLoopGroup.future()
+                } catch {
+                    return context.application.eventLoopGroup.future(error: error)
+                }
             }
 
         do {
