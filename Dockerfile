@@ -1,7 +1,7 @@
 # ================================
 # Develop image
 # ================================
-FROM swift:5.3-focal as develop
+FROM swift:5.9.2-focal as develop
 
 # Install OS updates and, if needed, sqlite3
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
@@ -37,7 +37,7 @@ RUN [ -d /develop/Resources ] && { mv /develop/Resources ./Resources && chmod -R
 # ================================
 # Run image
 # ================================
-FROM swift:5.3-focal-slim
+FROM swift:5.9.2-focal-slim
 
 # Make sure all system packages are up to date.
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true && \
