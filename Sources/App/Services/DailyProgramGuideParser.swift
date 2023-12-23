@@ -14,7 +14,6 @@ struct DailyProgramGuideParser: ProgramGuideParsing {
         // プログラムを生成
         return html.xpath("//article")
             .filter { $0["class"]?.contains("dailyProgram-itemBox") ?? false }
-            .filter { $0["class"]?.contains("ag") ?? false } // 放送休止を除く
             .compactMap { [programDateStr] in self.parseProgram(element: $0, date: programDateStr) }
     }
 
