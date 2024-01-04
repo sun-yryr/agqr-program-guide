@@ -2,26 +2,34 @@ import Foundation
 import Kanna
 
 protocol ProgramGuideParsing {
-    func parse(_ content: Data) -> [ProgramGuide]
+    func parse(_ content: Data) throws -> [ProgramGuide]
 }
 
 // データ取得元：日別
 struct DailyProgramGuideParser: ProgramGuideParsing {
-    func parse(_ content: Data) -> [ProgramGuide] {
+    func parse(_ content: Data) throws -> [ProgramGuide] {
         let html = try! HTML(html: content, encoding: .utf8)
-        let htmlDate = html.xpath("//h3[@class='heading_date']/span").first!
-
         // 正規表現で日付を抜き出す
-        let regex = try! NSRegularExpression(pattern: #"\d{2}/\d{2}"#)  // MM/dd
-        let mattched = regex.firstMatch(
-            in: htmlDate.text!, range: .init(location: 0, length: htmlDate.text!.count))!
-        let programDateStr = (htmlDate.text! as NSString).substring(with: mattched.range(at: 0))
-
+        let programDateStr = try parseDate(html: html)
         // プログラムを生成
         return html.xpath("//article")
             .filter { $0["class"]?.contains("dailyProgram-itemBox") ?? false }
-            .filter { $0["class"]?.contains("ag") ?? false }
             .compactMap { [programDateStr] in self.parseProgram(element: $0, date: programDateStr) }
+    }
+
+    func parseDate(html: Kanna.HTMLDocument) throws -> String {
+        // xpath //li[contains(@class, 'is-currentDate')
+        // textContentを正規表現で引っ掛ける
+        guard let currentDateText = html.xpath("//li[contains(@class, 'is-currentDate')]").first?.text else {
+            throw AgqrParseError(message: "HTMLから日付を取得できませんでした")
+        }
+        let regex = try! NSRegularExpression(pattern: #"\d{2}/\d{2}"#)  // MM/dd
+        let mattched = regex.firstMatch(
+            in: currentDateText, range: .init(location: 0, length: currentDateText.count))
+        guard let date = mattched else {
+            throw AgqrParseError(message: "日付のパースに失敗しました。対象のテキスト[ \(currentDateText) ]")
+        }
+        return (currentDateText as NSString).substring(with: date.range(at: 0))
     }
 
     func parseProgram(element: Kanna.XMLElement, date: String) -> ProgramGuide? {
@@ -38,7 +46,9 @@ struct DailyProgramGuideParser: ProgramGuideParsing {
         // dailyProgram-itemContainer からその他の情報を取得する
         let titleElement = element.xpath("//p[@class='dailyProgram-itemTitle']/a").first!
         let personalities: [Personality] = {
-            let itemPersonality = element.xpath("//p[@class='dailyProgram-itemPersonality']").first!
+            guard let itemPersonality = element.xpath("//p[@class='dailyProgram-itemPersonality']").first else {
+                return []
+            }
             let personalities = itemPersonality.xpath("/a").map {
                 Personality(name: $0.text!, info: $0["href"]!)
             }

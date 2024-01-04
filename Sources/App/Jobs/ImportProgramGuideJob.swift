@@ -24,12 +24,18 @@ struct ImportProgramGuideJob: ScheduledJob {
         let responses = await client.fetchWeekly(app: context.application)
         for response in responses {
             guard let response = response else {
-                // TODO: ログに変更
-                print("番組表データがありません。")
+                context.logger.error("NotFound program data")
                 continue
             }
-            let programGuide = self.parser.parse(response)
-            await self.repository.save(programGuide, app: context.application)
+            do {
+                let programGuide = try self.parser.parse(response)
+                return await self.repository.save(programGuide, app: context.application)
+            } catch let error as AgqrParseError {
+                context.logger.error(.init(stringLiteral: error.message))
+                return context.application.eventLoopGroup.future(error: error)
+            } catch {
+                return context.application.eventLoopGroup.future(error: error)
+            }
         }
     }
 }
