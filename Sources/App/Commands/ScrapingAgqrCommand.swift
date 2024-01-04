@@ -34,6 +34,7 @@ struct ScrapingAgqr: Command {
             return
         }
         let programGuide = parser.parse(response)
+        context.console.info(programGuide.map { element in element.program.startDatetime.toString() }.joined(separator: "\n"))
         await repository.save(programGuide, app: context.application)
     }
 }
