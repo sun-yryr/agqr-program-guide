@@ -14,8 +14,6 @@
 # Run migrations: docker-compose run migrate
 #       Stop all: docker-compose down (add -v to wipe db)
 #
-version: '3.7'
-
 volumes:
   db_data:
 
@@ -68,9 +66,9 @@ services:
       POSTGRES_PASSWORD: vapor_password
     ports:
       - '5432:5432'
-  redis:
-    image: redis:latest
-    ports: 
-      - '6379:6379'
-    volumes:
-      - ./data/redis:/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "vapor_username"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
