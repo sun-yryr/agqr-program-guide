@@ -1,4 +1,5 @@
 name: build-push
+run-name: Push [${{ inputs.version }}] from ${{ github.ref_name }}
 
 on:
   workflow_dispatch:
