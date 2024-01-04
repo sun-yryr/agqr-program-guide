@@ -59,16 +59,15 @@ services:
       - db
     command: ["--help"]
   db:
-    image: mysql:8.0
+    image: postgres:15.5
     volumes:
-      - db_data:/var/lib/mysql
-      - ./docker/mysql:/docker-entrypoint-initdb.d
+      - db_data:/var/lib/postgresql
+      - ./docker/db:/docker-entrypoint-initdb.d
     environment:
-      MYSQL_USER: vapor_username
-      MYSQL_PASSWORD: vapor_password
-      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+      POSTGRES_USER: vapor_username
+      POSTGRES_PASSWORD: vapor_password
     ports:
-      - '3306:3306'
+      - '5432:5432'
   redis:
     image: redis:latest
     ports: 

@@ -47,12 +47,12 @@
         }
       },
       {
-        "package": "fluent-mysql-driver",
-        "repositoryURL": "https://github.com/vapor/fluent-mysql-driver.git",
+        "package": "fluent-postgres-driver",
+        "repositoryURL": "https://github.com/vapor/fluent-postgres-driver.git",
         "state": {
           "branch": null,
-          "revision": "f86bf9c80a1c176234a16796c19add399a266c38",
-          "version": "4.0.2"
+          "revision": "7c266b539f71331ad6e53ea8fae587ccdaf972f2",
+          "version": "2.2.6"
         }
       },
       {
@@ -92,21 +92,21 @@
         }
       },
       {
-        "package": "mysql-kit",
-        "repositoryURL": "https://github.com/vapor/mysql-kit.git",
+        "package": "postgres-kit",
+        "repositoryURL": "https://github.com/vapor/postgres-kit.git",
         "state": {
           "branch": null,
-          "revision": "f54e0876fce2d68551be0e704b3a94f78eedb9f8",
-          "version": "4.5.0"
+          "revision": "35deea5c28a7d402f3280d81dee37bed5c56b9fe",
+          "version": "2.8.3"
         }
       },
       {
-        "package": "mysql-nio",
-        "repositoryURL": "https://github.com/vapor/mysql-nio.git",
+        "package": "postgres-nio",
+        "repositoryURL": "https://github.com/vapor/postgres-nio.git",
         "state": {
           "branch": null,
-          "revision": "f0e8ad7e18e870e8665311d70bf3f01dcd6024a8",
-          "version": "1.4.0"
+          "revision": "d648c5b4594ffbc2f6173318f70f5531e05ccb4e",
+          "version": "1.11.0"
         }
       },
       {
@@ -161,6 +161,15 @@
           "branch": null,
           "revision": "89b0a0a5f110e77272fb5a775064a31bfc1f155c",
           "version": "3.18.0"
+        }
+      },
+      {
+        "package": "swift-atomics",
+        "repositoryURL": "https://github.com/apple/swift-atomics.git",
+        "state": {
+          "branch": null,
+          "revision": "cd142fd2f64be2100422d658e7411e39489da985",
+          "version": "1.2.0"
         }
       },
       {

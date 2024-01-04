@@ -1,5 +1,5 @@
 import Fluent
-import FluentMySQLDriver
+import FluentPostgresDriver
 import Leaf
 import Queues
 import QueuesRedisDriver
@@ -9,17 +9,16 @@ import Vapor
 public func configure(_ app: Application) throws {
     // uncomment to serve files from /Public folder
     // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
-    var tls = TLSConfiguration.makeClientConfiguration()
-    tls.certificateVerification = .none
     app.databases.use(
-        .mysql(
+        .postgres(
             hostname: Environment.get("DATABASE_HOST") ?? "localhost",
-            port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? MySQLConfiguration.ianaPortNumber,
+            port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? PostgresConfiguration.ianaPortNumber,
             username: Environment.get("DATABASE_USERNAME") ?? "vapor_username",
             password: Environment.get("DATABASE_PASSWORD") ?? "vapor_password",
-            database: Environment.get("DATABASE_NAME") ?? "vapor_database",
-            tlsConfiguration: tls
-        ), as: .mysql)
+            database: Environment.get("DATABASE_NAME") ?? "vapor_database"
+        ),
+        as: .psql
+    )
 
     app.migrations.add(CreateProgram())
     app.migrations.add(CreatePersonality())
