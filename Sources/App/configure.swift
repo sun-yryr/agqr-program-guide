@@ -1,8 +1,6 @@
 import Fluent
 import FluentPostgresDriver
 import Leaf
-import Queues
-import QueuesRedisDriver
 import Vapor
 
 // configures your application
@@ -26,19 +24,13 @@ public func configure(_ app: Application) throws {
 
     app.views.use(.leaf)
 
+    let pgParser = DailyProgramGuideParser()
+    let pgRepository = ProgramGuideRepository()
     app.commands.use(
-        ScrapingAgqr(parser: DailyProgramGuideParser(), repository: ProgramGuideRepository()), as: "scraping")
-
-    try app.queues.use(.redis(url: Environment.get("REDIS_URL") ?? "redis://127.0.0.1:6379"))
-
-    app.queues.schedule(
-        ImportProgramGuideJob(parser: DailyProgramGuideParser(), repository: ProgramGuideRepository())
+        ScrapingAgqr(parser: pgParser, repository: pgRepository), as: "scraping")
+    app.commands.use(
+        ImportWeeklyPGCommand(parser: pgParser, repository: pgRepository), as: "import:weekly"
     )
-    .daily()
-    .at(7, 0)  // 07:00 am
-
-    // try app.queues.startInProcessJobs(on: .default)
-    try app.queues.startScheduledJobs()
 
     // register middleware
     let corsConfiguration = CORSMiddleware.Configuration(
