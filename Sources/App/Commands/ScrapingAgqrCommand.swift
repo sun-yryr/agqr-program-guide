@@ -30,11 +30,15 @@ struct ScrapingAgqr: Command {
     func asyncRun(using context: CommandContext, signature: Signature) async {
         let response = await client.execute(app: context.application, url: signature.url)
         guard let response = response else {
-            print("htmlデータの取得に失敗しました")
+            context.console.error("htmlデータの取得に失敗しました")
             return
         }
-        let programGuide = parser.parse(response)
-        context.console.info(programGuide.map { element in element.program.startDatetime.toString() }.joined(separator: "\n"))
-        await repository.save(programGuide, app: context.application)
+        do {
+            let programGuide = try parser.parse(response)
+            context.console.info(programGuide.map { element in element.program.startDatetime.toString() }.joined(separator: "\n"))
+            await repository.save(programGuide, app: context.application)
+        } catch {
+            context.console.error(.init(stringLiteral: error.localizedDescription))
+        }
     }
 }

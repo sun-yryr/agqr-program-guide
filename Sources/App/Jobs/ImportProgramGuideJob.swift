@@ -32,9 +32,8 @@ struct ImportProgramGuideJob: ScheduledJob {
                 return await self.repository.save(programGuide, app: context.application)
             } catch let error as AgqrParseError {
                 context.logger.error(.init(stringLiteral: error.message))
-                return context.application.eventLoopGroup.future(error: error)
             } catch {
-                return context.application.eventLoopGroup.future(error: error)
+                context.logger.error(.init(stringLiteral: error.localizedDescription))
             }
         }
     }
