@@ -21,6 +21,11 @@ migrate:
 build:
 	docker-compose build --no-cache
 up:
-	docker-compose up -d db redis
+	docker-compose up -d db
 down:
 	docker-compose down
+
+.PHONY: generate-redoc
+generate-redoc:
+	docker run --rm -v ${PWD}/reference:/spec redocly/cli build-docs agqr-radio-program-guide-api.v2.yaml -o redoc-static.html
+	mv reference/redoc-static.html Resources/Views/redoc-static.html

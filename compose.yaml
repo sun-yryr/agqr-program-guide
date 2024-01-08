@@ -14,8 +14,6 @@
 # Run migrations: docker-compose run migrate
 #       Stop all: docker-compose down (add -v to wipe db)
 #
-version: '3.7'
-
 volumes:
   db_data:
 
@@ -40,6 +38,7 @@ services:
     command: ["serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8080"]
   dev:
     image: agqr-program-guide:latest
+    platform: linux/amd64
     build:
       context: .
       target: develop
@@ -49,6 +48,7 @@ services:
       - db
   commands:
     image: agqr-program-guide:latest
+    platform: linux/amd64
     build:
       context: .
     environment:
@@ -57,19 +57,18 @@ services:
       - db
     command: ["--help"]
   db:
-    image: mysql:8.0
+    image: postgres:15.5
     volumes:
-      - db_data:/var/lib/mysql
-      - ./docker/mysql:/docker-entrypoint-initdb.d
+      - db_data:/var/lib/postgresql
+      - ./docker/db:/docker-entrypoint-initdb.d
     environment:
-      MYSQL_USER: vapor_username
-      MYSQL_PASSWORD: vapor_password
-      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+      POSTGRES_USER: vapor_username
+      POSTGRES_PASSWORD: vapor_password
     ports:
-      - '3306:3306'
-  redis:
-    image: redis:latest
-    ports: 
-      - '6379:6379'
-    volumes:
-      - ./data/redis:/data
+      - '5432:5432'
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "vapor_username"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 30s

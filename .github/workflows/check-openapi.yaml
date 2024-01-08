@@ -1,0 +1,34 @@
+name: Check OpenAPI
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/check-openapi.yaml'
+      - 'reference/agqr-radio-program-guide-api.v2.yaml'
+      - 'Resources/Views/redoc-static.html'
+  pull_request:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/check-openapi.yaml'
+      - 'reference/agqr-radio-program-guide-api.v2.yaml'
+      - 'Resources/Views/redoc-static.html'
+
+jobs:
+  exists-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make generate-redoc
+      - name: Check exists diff
+        run: |
+          if ! git diff --quiet; then
+            exit 1
+          fi
+  # TODO: 後で直す
+  # lint:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - run: make lint-openapi

@@ -7,8 +7,8 @@ struct ScrapingAgqr: Command {
     let client = DownloadAgqrProgramGuide()
 
     struct Signature: CommandSignature {
-        @Option(name: "url")
-        var url: String?
+        @Argument(name: "url")
+        var url: String
     }
 
     var help: String = "Download program guide and parse to json."
@@ -18,23 +18,27 @@ struct ScrapingAgqr: Command {
         defer {
             context.console.info("End Process")
         }
-        let future = client.execute(app: context.application, url: signature.url)
-            .unwrap(or: fatalError("htmlデータの取得に失敗しました"))
-            .flatMap { res -> EventLoopFuture<Void> in
-                do {
-                    let programGuide = try self.parser.parse(res)
-                    context.console.info(programGuide.map { element in element.program.startDatetime.toString() }.joined(separator: ","))
-                    return context.application.eventLoopGroup.future()
-                } catch {
-                    return context.application.eventLoopGroup.future(error: error)
-                }
-            }
 
+        let promise = context.application.eventLoopGroup.next().makePromise(of: Void.self)
+        promise.completeWithTask {
+            await self.asyncRun(using: context, signature: signature)
+        }
+
+        try promise.futureResult.wait()
+    }
+
+    func asyncRun(using context: CommandContext, signature: Signature) async {
+        let response = await client.execute(app: context.application, url: signature.url)
+        guard let response = response else {
+            context.console.error("htmlデータの取得に失敗しました")
+            return
+        }
         do {
-            try future.wait()
+            let programGuide = try parser.parse(response)
+            context.console.info(programGuide.map { element in element.program.startDatetime.toString() }.joined(separator: "\n"))
+            await repository.save(programGuide, app: context.application)
         } catch {
-            print("Batch failure")
-            print(error.localizedDescription)
+            context.console.error(.init(stringLiteral: error.localizedDescription))
         }
     }
 }
