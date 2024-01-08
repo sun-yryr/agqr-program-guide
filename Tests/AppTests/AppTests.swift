@@ -2,10 +2,9 @@
 import XCTVapor
 
 final class AppTests: ControllerBaseTestCase {
-    func testHelloWorld() throws {
-        try app.test(.GET, "hello", afterResponse: { res in
+    func testHealth() throws {
+        try app.test(.GET, "health", afterResponse: { res in
             XCTAssertEqual(res.status, .ok)
-            XCTAssertEqual(res.body.string, "Hello, world!")
         })
     }
 }
