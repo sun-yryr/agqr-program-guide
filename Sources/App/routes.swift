@@ -3,7 +3,7 @@ import Vapor
 
 func routes(_ app: Application) throws {
     app.get { req in
-        return req.view.render("index", ["title": "Hello Vapor!"])
+        return req.view.render("redoc-static.html")
     }
 
     app.get("health") { _ -> Response in
