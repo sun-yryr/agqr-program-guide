@@ -6,8 +6,8 @@ func routes(_ app: Application) throws {
         return req.view.render("index", ["title": "Hello Vapor!"])
     }
 
-    app.get("hello") { _ -> String in
-        return "Hello, world!"
+    app.get("health") { _ -> Response in
+        return Response(status: .ok)
     }
 
     try app.group("api") { builder in
