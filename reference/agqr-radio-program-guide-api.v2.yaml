@@ -22,6 +22,12 @@ paths:
     get:
       summary: 週刊番組表を取得
       tags: [v1]
+      parameters:
+        - name: isRepeat
+          in: query
+          description: true を指定すると再放送を含めた番組情報を返却する
+          schema:
+            type: boolean
       responses:
         '200':
           description: OK
@@ -39,6 +45,12 @@ paths:
     get:
       summary: 日間番組表を取得
       tags: [v1]
+      parameters:
+        - name: isRepeat
+          in: query
+          description: true を指定すると再放送を含めた番組情報を返却する
+          schema:
+            type: boolean
       responses:
         '200':
           description: OK
