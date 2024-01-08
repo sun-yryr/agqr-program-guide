@@ -33,6 +33,13 @@ public func configure(_ app: Application) throws {
     )
 
     // register middleware
+    app.middleware.use(newCORSMiddleware())
+
+    // register routes
+    try routes(app)
+}
+
+func newCORSMiddleware() -> CORSMiddleware {
     let corsConfiguration = CORSMiddleware.Configuration(
         allowedOrigin: .all,
         allowedMethods: [.GET, .OPTIONS, .HEAD],
@@ -40,8 +47,5 @@ public func configure(_ app: Application) throws {
             .accept, .contentType, .origin, .xRequestedWith, .userAgent, .accessControlAllowOrigin,
         ]
     )
-    app.middleware.use(CORSMiddleware(configuration: corsConfiguration))
-
-    // register routes
-    try routes(app)
+    return CORSMiddleware(configuration: corsConfiguration)
 }
