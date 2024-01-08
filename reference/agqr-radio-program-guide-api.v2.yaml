@@ -2,88 +2,26 @@ openapi: 3.0.0
 info:
   title: agqr-radio-program-guide-api
   version: '1.0'
-  contact:
-    name: sun-yryr(t_minagawa)
-    url: 'https://twitter.com/taittide'
-    email: taittide@gmail.com
+  description: |-
+    **[非公式]  超A&G+ 番組表 API**  
+    データ更新頻度: 1日ごと（JST 07:00 ごろ）
+
+    何かバグ等ありましたら、Issue を立てていただくか下記の連絡先までご連絡ください。  
+    Twitter(X): [@sun_yryr](https://twitter.com/sun_yryr)  
+    GitHub: https://github.com/sun-yryr/agqr-program-guide
 servers:
+  - url: 'https://agqr.sun-yryr.com/api'
+    description: production
   - url: 'http://localhost:8080/api'
     description: local
-  - url: 'https://agqr.sun-yryr.com/api'
-    description: prod
+tags:
+  - name: v1
+    description: 'v1 API'
 paths:
-  /v2/programs/weekly:
-    get:
-      summary: '[未実装] 週間番組表を取得'
-      tags: []
-      responses:
-        '200':
-          description: OK（検索結果がない場合は空配列になります）
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/program'
-      operationId: get-v2-programs-weekly
-      description: 条件に合った番組情報を返却する。
-      parameters:
-        - schema:
-            type: string
-          in: query
-          name: q
-          description: '検索ワード（title,personality,infoの全てを対象）'
-        - schema:
-            type: string
-            example: 'audio,movie,repeat'
-            default: 'audio,movie'
-          in: query
-          name: include_program_type
-          description: |-
-            検索結果に含める番組タイプ
-            [,]区切りで記述
-            movie: 動画付きのみ
-            audio: 音声のみ
-            repeat: 再放送を含める
-    parameters: []
-  /v2/programs/daily:
-    get:
-      summary: '[未実装] 日間番組表を取得'
-      tags: []
-      responses:
-        '200':
-          description: OK（検索結果がない場合は空配列になります）
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/program'
-      operationId: get-v2-programs-daily
-      description: 条件に合った番組情報を返却する
-      parameters:
-        - schema:
-            type: string
-          in: query
-          name: q
-          description: '検索ワード（title,personality,infoの全てを対象）'
-        - schema:
-            type: string
-            example: 'audio,movie,repeat'
-            default: 'audio,movie'
-          in: query
-          name: include_program_type
-          description: |-
-            検索結果に含める番組タイプ
-            [,]区切りで記述
-            movie: 動画付きのみ
-            audio: 音声のみ
-            repeat: 再放送を含める
-    parameters: []
   /all:
     get:
       summary: 週刊番組表を取得
-      tags: []
+      tags: [v1]
       responses:
         '200':
           description: OK
@@ -95,12 +33,12 @@ paths:
                   $ref: '#/components/schemas/old-program'
       operationId: get-all
       description: |-
-        1週間分全ての番組情報を返却します
-        そのうち削除予定
+        1週間分全ての番組情報を返却する。
+        実行日の日本時間の0時から7日後の23時59分までの間の番組情報を返却する。
   /today:
     get:
       summary: 日間番組表を取得
-      tags: []
+      tags: [v1]
       responses:
         '200':
           description: OK
@@ -112,12 +50,12 @@ paths:
                   $ref: '#/components/schemas/old-program'
       operationId: get-today
       description: |-
-        本日放送予定の番組情報を返却します
-        そのうち削除予定
+        本日放送予定の番組情報を返却する。
+        本日とは、日本時間の0時から23時59分までの間のことを指す。
   /now:
     get:
       summary: 現在の番組情報を返却
-      tags: []
+      tags: [v1]
       responses:
         '200':
           description: OK
@@ -128,37 +66,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/old-program'
       operationId: get-now
-      description: |-
-        現在放送中の番組情報を返却します
-        そのうち削除予定
-  /v2/programs/now:
-    get:
-      summary: '[未実装] 現在の番組情報を返却'
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/program'
-        '404':
-          description: 現在放送中の番組がありません
-      operationId: get-v2-programs-now
-      description: 現在放送中の番組情報を返却します
-  '/v2/programs/{programId}':
-    parameters:
-      - schema:
-          type: string
-        name: programId
-        in: path
-        required: true
-    get:
-      summary: '[未実装] 番組詳細を取得する'
-      tags: []
-      responses: {}
-      operationId: get-v2-programs-programId
-      description: ''
+      description: 現在放送中の番組情報を返却する
 components:
   schemas:
     program:
