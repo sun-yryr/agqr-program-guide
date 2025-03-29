@@ -10,12 +10,13 @@ public func configure(_ app: Application) throws {
     // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
     
     // SSL設定
-    let tlsConfig: TLSConfiguration? = nil
+    let tlsConfig: TLSConfiguration?
     if Environment.get("DATABASE_USE_SSL") == "true" {
         var config = TLSConfiguration.makeClientConfiguration()
-        // 自己証明書環境なので検証はしない
         config.certificateVerification = .none
         tlsConfig = config
+    } else {
+        tlsConfig = nil
     }
     
     app.databases.use(
