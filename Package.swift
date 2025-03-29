@@ -1,19 +1,20 @@
-// swift-tools-version:5.5
+// swift-tools-version:6.0
 import PackageDescription
 
 let package = Package(
     name: "agqr-program-guide",
     platforms: [
-        .macOS(.v12)
+        .macOS(.v14)
     ],
     dependencies: [
         // 💧 A server-side Swift web framework.
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
-        .package(url: "https://github.com/vapor/fluent.git", from: "4.0.0"),
-        .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.0.0"),
-        .package(url: "https://github.com/vapor/leaf.git", from: "4.0.0"),
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.92.1"),
+        .package(url: "https://github.com/vapor/fluent.git", from: "4.8.0"),
+        .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.8.0"),
+        .package(url: "https://github.com/vapor/leaf.git", from: "4.2.4"),
+        .package(url: "https://github.com/vapor/multipart-kit.git", exact: "4.5.3"),
         // HTML Parser
-        .package(url: "https://github.com/tid-kijyun/Kanna.git", .upToNextMajor(from: "5.2.4"))
+        .package(url: "https://github.com/tid-kijyun/Kanna.git", .upToNextMajor(from: "5.2.7"))
     ],
     targets: [
         .target(
@@ -33,7 +34,7 @@ let package = Package(
                 .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release))
             ]
         ),
-        .target(name: "Run", dependencies: [.target(name: "App")]),
+        .executableTarget(name: "Run", dependencies: [.target(name: "App")]),
         .testTarget(name: "AppTests", dependencies: [
             .target(name: "App"),
             .product(name: "XCTVapor", package: "vapor"),

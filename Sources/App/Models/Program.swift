@@ -2,7 +2,7 @@ import Fluent
 import Foundation
 import Vapor
 
-final class Program: Model, Content {
+final class Program: Model, Content, @unchecked Sendable {
     static let schema = "programs"
 
     @ID(custom: "id")

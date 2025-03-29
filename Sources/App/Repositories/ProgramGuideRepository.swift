@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-protocol ProgramGuideSaving {
+protocol ProgramGuideSaving: Sendable {
     func save(_ items: [ProgramGuide], app: Application) async
 }
 

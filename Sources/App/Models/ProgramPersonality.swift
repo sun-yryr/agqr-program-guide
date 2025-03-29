@@ -1,6 +1,6 @@
 import Fluent
 
-final class ProgramPersonality: Model {
+final class ProgramPersonality: Model, @unchecked Sendable {
     static let schema = "programs+personalities"
 
     @ID(custom: "id")
