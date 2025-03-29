@@ -199,3 +199,6 @@ Packages
 xcuserdata
 *.xcodeproj
 .swiftpm
+
+# SSL証明書関連
+docker/db/certs/
