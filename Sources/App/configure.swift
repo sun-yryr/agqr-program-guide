@@ -10,23 +10,12 @@ public func configure(_ app: Application) throws {
     // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
     
     // SSL設定
-    let tlsConfig: TLSConfiguration?
+    let tlsConfig: TLSConfiguration? = nil
     if Environment.get("DATABASE_USE_SSL") == "true" {
         var config = TLSConfiguration.makeClientConfiguration()
-        
-        // 環境に応じて証明書検証の設定を変更
-        if app.environment == .production {
-            // 本番環境では適切な証明書検証を行う
-            print("production")
-            config.certificateVerification = .fullVerification
-        } else {
-            // 開発環境では自己署名証明書を使用するため、証明書検証を無効化
-            print("other")
-            config.certificateVerification = .none
-        }
+        // 自己証明書環境なので検証はしない
+        config.certificateVerification = .none
         tlsConfig = config
-    } else {
-        tlsConfig = nil
     }
     
     app.databases.use(
