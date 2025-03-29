@@ -2,18 +2,41 @@ import Fluent
 import FluentPostgresDriver
 import Leaf
 import Vapor
+import NIOSSL
 
 // configures your application
 public func configure(_ app: Application) throws {
     // uncomment to serve files from /Public folder
     // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
+    
+    // SSL設定
+    let tlsConfig: TLSConfiguration?
+    if Environment.get("DATABASE_USE_SSL") == "true" {
+        var config = TLSConfiguration.makeClientConfiguration()
+        
+        // 環境に応じて証明書検証の設定を変更
+        if app.environment == .production {
+            // 本番環境では適切な証明書検証を行う
+            print("production")
+            config.certificateVerification = .fullVerification
+        } else {
+            // 開発環境では自己署名証明書を使用するため、証明書検証を無効化
+            print("other")
+            config.certificateVerification = .none
+        }
+        tlsConfig = config
+    } else {
+        tlsConfig = nil
+    }
+    
     app.databases.use(
         .postgres(
             hostname: Environment.get("DATABASE_HOST") ?? "localhost",
             port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? PostgresConfiguration.ianaPortNumber,
             username: Environment.get("DATABASE_USERNAME") ?? "vapor_username",
             password: Environment.get("DATABASE_PASSWORD") ?? "vapor_password",
-            database: Environment.get("DATABASE_NAME") ?? "vapor_database"
+            database: Environment.get("DATABASE_NAME") ?? "vapor_database",
+            tlsConfiguration: tlsConfig
         ),
         as: .psql
     )

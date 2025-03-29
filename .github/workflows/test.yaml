@@ -14,15 +14,29 @@ jobs:
         swift: ["5.9"]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: swift-actions/setup-swift@v1
+      - uses: swift-actions/setup-swift@v2
         with:
           swift-version: ${{ matrix.swift }}
       - uses: actions/checkout@v4
       - run: swift package resolve
       - name: Build
         run: swift build
+      - name: Setup SSL certificates for PostgreSQL
+        run: |
+          mkdir -p docker/db/certs
+          openssl genrsa -out docker/db/certs/server.key 2048
+          openssl req -new -key docker/db/certs/server.key -out docker/db/certs/server.csr -subj "/CN=localhost"
+          openssl x509 -req -in docker/db/certs/server.csr -signkey docker/db/certs/server.key -out docker/db/certs/server.crt -days 365
+          chmod 600 docker/db/certs/server.key
+          mkdir -p docker/db/config
+          cp docker/db/config/postgresql.conf.template docker/db/config/postgresql.conf
+          cp docker/db/config/pg_hba.conf.template docker/db/config/pg_hba.conf
       - name: setup service
         run: |
           docker compose up -d db --wait
+        env:
+          DATABASE_USE_SSL: "true"
       - name: Run tests
         run: swift test
+        env:
+          DATABASE_USE_SSL: "true"
