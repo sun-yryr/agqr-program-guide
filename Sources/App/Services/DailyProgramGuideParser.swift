@@ -1,7 +1,7 @@
 import Foundation
 import Kanna
 
-protocol ProgramGuideParsing {
+protocol ProgramGuideParsing: Sendable {
     func parse(_ content: Data) throws -> [ProgramGuide]
 }
 

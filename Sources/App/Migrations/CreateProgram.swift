@@ -7,7 +7,7 @@ struct CreateProgram: Migration {
         return database.schema(self.tableName)
             .field("id", .int, .identifier(auto: true))
             .field("title", .string, .required)
-            .field("info", .sql(raw: "TEXT"), .required)
+            .field("info", .sql(unsafeRaw: "TEXT"), .required)
             .field("url", .string, .required)
             .field("start_datetime", .datetime, .required)
             .field("end_datetime", .datetime, .required)
