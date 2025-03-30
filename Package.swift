@@ -12,7 +12,6 @@ let package = Package(
         .package(url: "https://github.com/vapor/fluent.git", from: "4.8.0"),
         .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.8.0"),
         .package(url: "https://github.com/vapor/leaf.git", from: "4.2.4"),
-        .package(url: "https://github.com/vapor/multipart-kit.git", exact: "4.5.3"),
         // HTML Parser
         .package(url: "https://github.com/tid-kijyun/Kanna.git", .upToNextMajor(from: "5.2.7"))
     ],
