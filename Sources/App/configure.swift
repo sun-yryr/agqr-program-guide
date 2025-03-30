@@ -12,7 +12,9 @@ public func configure(_ app: Application) throws {
     // SSL設定
     let tls: PostgresConnection.Configuration.TLS
     if Environment.get("DATABASE_USE_SSL") == "true" {
-        tls = .prefer(try .init(configuration: .clientDefault))
+        var config = TLSConfiguration.makeClientConfiguration()
+        config.certificateVerification = .none
+        tls = .prefer(try .init(configuration: config))
     } else {
         tls = .disable
     }
