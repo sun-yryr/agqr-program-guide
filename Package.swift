@@ -13,7 +13,7 @@ let package = Package(
         .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.8.0"),
         .package(url: "https://github.com/vapor/leaf.git", from: "4.2.4"),
         // HTML Parser
-        .package(url: "https://github.com/tid-kijyun/Kanna.git", .upToNextMajor(from: "5.2.7"))
+        .package(url: "https://github.com/tid-kijyun/Kanna.git", .upToNextMajor(from: "6.0.0"))
     ],
     targets: [
         .target(
